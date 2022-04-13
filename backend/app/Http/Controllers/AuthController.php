@@ -18,14 +18,15 @@ class AuthController extends Controller
 
         $validator = Validator::make($data,[
             'name'     => 'required',
-            'email'    => 'required|email',
-            'password' => 'required|min:6'
+            'email'    => 'required|email|unique:users,email',
+            'password' => 'required|min:6|confirmed'
         ]);
 
         if ($validator->fails()) {
             return response()->json([
+                'status' => false,
                 'validationError' => $validator->errors()
-            ],422);
+            ]);
         }else{
 
             $user = User::insert([
@@ -61,8 +62,9 @@ class AuthController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
+                'status' => false,
                 'validationError' => $validator->errors()
-            ],422);
+            ]);
         }else{
 
             $credentials = $request->only(['email','password']);
@@ -103,6 +105,6 @@ class AuthController extends Controller
         ]);
     }
 
-    
+
 
 }
