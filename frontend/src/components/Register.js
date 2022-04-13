@@ -7,12 +7,13 @@ import Swal from 'sweetalert2'
 
 const Register = () => {
 
-    const [name,setName] = useState('');
-    const [email,setEmail] = useState('');
-    const [password,setPassword] = useState('');
+    const [name,setName] = useState("");
+    const [email,setEmail] = useState("");
+    const [password,setPassword] = useState("");
+    const [password_confirmation,setPassword_Confirmation] = useState("");
 
     //validation error
-    const [error,setError] = useState([])
+    const [error,setError] = useState([]);
 
     //clear form
     const clearForm = ()=>{
@@ -21,8 +22,6 @@ const Register = () => {
         setEmail("")
         setPassword("")
         setPassword_Confirmation("")
-        setEmail("")
-
         setError([]);
     }
 
@@ -36,29 +35,19 @@ const Register = () => {
         formData.append('password',password);
         formData.append('password_confirmation',password_confirmation);
 
-        const  config = {
-            headers: {
-                "Content-Type" : 'application/json'
-            }
-        }
 
-        const res = await axios.post('http://127.0.0.1:8000/api/register',formData,config);
+        const res = await axios.post('http://127.0.0.1:8000/api/register',formData);
 
-        if (res.data.status === 200){
+        if (res.data.status == true){
 
             const Toast = Swal.mixin({
                 toast: true,
                 position: 'top-end',
                 showConfirmButton: false,
                 timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                }
             })
 
-            await Toast.fire({
+            Toast.fire({
                 icon: 'success',
                 title: 'User Registered successfully'
             })
@@ -82,19 +71,19 @@ const Register = () => {
                                 <Form.Group className="mb-3">
                                     <Form.Label htmlFor="name">Name</Form.Label>
                                     <Form.Control type="text" onChange={(e)=>{setName(e.target.value)}} name="name" id="name" value={name} placeholder="Enter Name" />
-                                    <span className="text-danger">{error.name}</span>
+                                    <span className="text-danger">{error.name ? error.name : ''}</span>
                                 </Form.Group>
 
                                 <Form.Group className="mb-3">
                                     <Form.Label htmlFor="email">Email address</Form.Label>
                                     <Form.Control type="email" name="email" id="email" onChange={(e)=>{setEmail(e.target.value)}} value={email} placeholder="Enter email" />
-                                    <span className="text-danger">{error.email}</span>
+                                    <span className="text-danger">{error.email ? error.email : ''}</span>
                                 </Form.Group>
 
                                 <Form.Group className="mb-3">
                                     <Form.Label htmlFor="password">Password</Form.Label>
                                     <Form.Control type="password" name="password" onChange={(e)=>{setPassword(e.target.value)}} id="password" value={password} placeholder="Password" />
-                                    <span className="text-danger">{error.password}</span>
+                                    <span className="text-danger">{error.password ? error.password : ''}</span>
                                 </Form.Group>
 
                                 <Form.Group className="mb-3">
@@ -102,7 +91,7 @@ const Register = () => {
                                     <Form.Control type="password" name="password_confirmation" onChange={(e)=>{setPassword_Confirmation(e.target.value)}} id="password_confirmation" value={password_confirmation} placeholder="Confirm Password" />
                                 </Form.Group>
 
-                                <Button variant="success" onClick={onclickHandler} className="btn-sm" type="submit">
+                                <Button variant="success" onClick={onclickHandler} className="btn-sm" type="button">
                                     Register
                                 </Button>
 

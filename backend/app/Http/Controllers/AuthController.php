@@ -43,7 +43,7 @@ class AuthController extends Controller
             }else{
                 return response()->json([
                     'status'  => false,
-                    'message' => 'User registered failed'
+                    'message' => 'User registration failed'
                 ], 404);
             }
 
