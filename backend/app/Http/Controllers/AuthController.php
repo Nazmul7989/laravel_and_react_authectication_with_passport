@@ -23,7 +23,9 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json($validator->errors(),422);
+            return response()->json([
+                'validationError' => $validator->errors()
+            ],422);
         }else{
 
             $user = User::insert([
@@ -33,9 +35,15 @@ class AuthController extends Controller
             ]);
 
             if ($user == true) {
-                return response()->json(['message' => 'User created successfully'], 200);
+                return response()->json([
+                    'status'  => true,
+                    'message' => 'User created successfully'
+                ], 200);
             }else{
-                return response()->json(['message' => 'User registered failed'], 404);
+                return response()->json([
+                    'status'  => false,
+                    'message' => 'User registered failed'
+                ], 404);
             }
 
         }
@@ -52,7 +60,9 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json($validator->errors(),422);
+            return response()->json([
+                'validationError' => $validator->errors()
+            ],422);
         }else{
 
             $credentials = $request->only(['email','password']);
@@ -66,12 +76,16 @@ class AuthController extends Controller
 
 
                 return response()->json([
+                    'status'  => true,
                     'access_token' => $token,
                     'token_type' => "Bearer",
                     'token_expires' => Carbon::parse($token_expires)->toDateString()
                 ]);
             }else{
-                return response()->json(['message' => 'Unauthorized'], 401);
+                return response()->json([
+                    'status'  => false,
+                    'message' => 'Unauthorized'
+                ], 401);
             }
 
         }
@@ -83,13 +97,12 @@ class AuthController extends Controller
         $token = $request->user()->token();
         $token->revoke();
 
-        return response()->json(['message' => 'Logout successfully']);
+        return response()->json([
+            'status'  => true,
+            'message' => 'Logout successfully'
+        ]);
     }
 
-
-    public function user()
-    {
-        
-    }
     
+
 }
