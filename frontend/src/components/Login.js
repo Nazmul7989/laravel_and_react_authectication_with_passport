@@ -1,8 +1,69 @@
-import React, {Fragment} from 'react';
+import React, {Fragment, useState} from 'react';
 import {Container, Row, Col, Form, Button, Card} from "react-bootstrap";
 import {Link} from "react-router-dom";
+import axios from "axios";
+import Swal from "sweetalert2";
 
 const Login = () => {
+
+    const [email,setEmail] = useState("");
+    const [password,setPassword] = useState("");
+
+    //validation error
+    const [error,setError] = useState([]);
+    const [errorMessage,setErrorMessage] = useState('');
+
+    //clear form
+    const clearForm = ()=>{
+        setEmail("")
+        setPassword("")
+        setError([]);
+    }
+
+
+    const onclickHandler = async (e)=>{
+        e.preventDefault();
+
+        let  formData = new FormData();
+
+        formData.append('email',email);
+        formData.append('password',password);
+
+        const res = await axios.post('http://127.0.0.1:8000/api/login',formData);
+
+        if (res.data.status == true){
+
+            console.log(res.data)
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+            })
+
+            Toast.fire({
+                icon: 'success',
+                title: 'Yoy have logged in successfully'
+            })
+
+            clearForm();
+            setErrorMessage('');
+
+        }else {
+
+            if (res.data.validationError){
+                setError(res.data.validationError);
+                setErrorMessage('');
+            }
+
+            if (res.data.message){
+                setErrorMessage(res.data.message);
+                setError([]);
+            }
+        }
+    }
+
+
     return (
         <Fragment>
             <Container>
@@ -10,22 +71,29 @@ const Login = () => {
                     <Col lg={6} md={8} sm={12}>
                         <Card className="px-4 py-4 mt-5">
                             <h3 className="text-center">User Registration</h3>
-                            <Form>
+                            <Form method="post">
+                                { errorMessage? (
+                                    <div className="alert alert-danger">
+                                        { errorMessage}
+                                    </div>
+                                ): ''}
 
-                                <Form.Group className="mb-3" controlId="formBasicEmail">
+                                <Form.Group className="mb-3">
                                     <Form.Label htmlFor="email">Email address</Form.Label>
-                                    <Form.Control type="email" name="email" id="email" placeholder="Enter email" />
+                                    <Form.Control type="email" name="email" id="email" onChange={(e)=>{setEmail(e.target.value)}} value={email} placeholder="Enter email" />
+                                    <span className="text-danger">{error.email ? error.email : ''}</span>
                                 </Form.Group>
 
-                                <Form.Group className="mb-3" controlId="formBasicPassword">
+                                <Form.Group className="mb-3">
                                     <Form.Label htmlFor="password">Password</Form.Label>
-                                    <Form.Control type="password" name="password" id="password" placeholder="Password" />
+                                    <Form.Control type="password" name="password" onChange={(e)=>{setPassword(e.target.value)}} id="password" value={password} placeholder="Password" />
+                                    <span className="text-danger">{error.password ? error.password : ''}</span>
                                 </Form.Group>
 
-                                <Button variant="success" className="btn-sm" type="submit">
+                                <Button variant="success" onClick={onclickHandler} className="btn-sm" type="button">
                                     Login
                                 </Button>
-                                <Form.Group className="my-3" controlId="formBasicPassword">
+                                <Form.Group className="my-3">
                                     <small>Don't have an Account? <Link to="/register">Register Here</Link></small>
                                 </Form.Group>
                             </Form>

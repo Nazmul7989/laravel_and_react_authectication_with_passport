@@ -86,8 +86,8 @@ class AuthController extends Controller
             }else{
                 return response()->json([
                     'status'  => false,
-                    'message' => 'Unauthorized'
-                ], 401);
+                    'message' => 'This credential does not match our records.'
+                ]);
             }
 
         }
