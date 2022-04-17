@@ -24,7 +24,7 @@ class AuthController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'status' => false,
+                'status'          => false,
                 'validationError' => $validator->errors()
             ]);
         }else{
@@ -62,7 +62,7 @@ class AuthController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'status' => false,
+                'status'          => false,
                 'validationError' => $validator->errors()
             ]);
         }else{
@@ -78,9 +78,10 @@ class AuthController extends Controller
 
 
                 return response()->json([
-                    'status'  => true,
-                    'access_token' => $token,
-                    'token_type' => "Bearer",
+                    'status'        => true,
+                    'user'          => $user,
+                    'access_token'  => $token,
+                    'token_type'    => "Bearer",
                     'token_expires' => Carbon::parse($token_expires)->toDateString()
                 ]);
             }else{

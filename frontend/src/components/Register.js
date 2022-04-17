@@ -1,6 +1,6 @@
 import React, {Fragment,useState} from 'react';
 import {Button, Col, Container, Form, Row,Card} from "react-bootstrap";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import axios from "axios";
 import Swal from 'sweetalert2'
 
@@ -14,6 +14,7 @@ const Register = () => {
 
     //validation error
     const [error,setError] = useState([]);
+    const navigate = useNavigate();
 
     //clear form
     const clearForm = ()=>{
@@ -51,6 +52,8 @@ const Register = () => {
                 icon: 'success',
                 title: 'User Registered successfully'
             })
+
+            navigate('/login');
 
             clearForm()
 

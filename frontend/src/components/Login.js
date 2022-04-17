@@ -1,6 +1,6 @@
 import React, {Fragment, useState} from 'react';
 import {Container, Row, Col, Form, Button, Card} from "react-bootstrap";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
 
@@ -20,6 +20,9 @@ const Login = () => {
         setError([]);
     }
 
+    //redirect to dashboard page
+    const navigate = useNavigate();
+
 
     const onclickHandler = async (e)=>{
         e.preventDefault();
@@ -33,7 +36,9 @@ const Login = () => {
 
         if (res.data.status == true){
 
-            console.log(res.data)
+            localStorage.setItem('access_token',res.data.access_token);
+            localStorage.setItem('user',JSON.stringify(res.data.user));
+
             const Toast = Swal.mixin({
                 toast: true,
                 position: 'top-end',
@@ -46,6 +51,7 @@ const Login = () => {
                 title: 'Yoy have logged in successfully'
             })
 
+            navigate('/dashboard')
             clearForm();
             setErrorMessage('');
 
@@ -70,7 +76,7 @@ const Login = () => {
                 <Row className="d-flex justify-content-center">
                     <Col lg={6} md={8} sm={12}>
                         <Card className="px-4 py-4 mt-5">
-                            <h3 className="text-center">User Registration</h3>
+                            <h3 className="text-center">User Login</h3>
                             <Form method="post">
                                 { errorMessage? (
                                     <div className="alert alert-danger">
